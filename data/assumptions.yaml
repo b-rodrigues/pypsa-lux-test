@@ -1,0 +1,55 @@
+# Baseline assumptions for Luxembourg Energy Transition Simulator
+general:
+  hours_in_year: 8760
+  representative_hours: 168
+  discount_rate: 0.05 # 5% WACC
+
+defaults:
+  demand_growth_pct: 10.0 # user control [-10% to +40%]
+  solar_cost_mult_pct: 60.0 # user control [20% to 150%]
+  wind_cost_mult_pct: 50.0 # user control [20% to 150%]
+  battery_cost_mult_pct: 120.0 # user control [20% to 200%]
+  import_price: 100.0 # €/MWh [20 to 250 €/MWh]
+  carbon_price: 80.0 # €/tCO2 [0 to 200 €/tCO2]
+
+technologies:
+  solar:
+    overnight_capex: 650000.0 # €/MW (utility & commercial rooftop blend)
+    lifetime: 25 # years
+    fom_percent: 0.015 # 1.5% FOM per year
+    marginal_cost: 0.0 # €/MWh
+    max_potential_mw: 2000.0 # technical roof & agrivoltaic potential
+    co2_emissions_factor: 0.0 # tCO2/MWh
+
+  wind:
+    overnight_capex: 1350000.0 # €/MW (onshore wind)
+    lifetime: 25 # years
+    fom_percent: 0.025 # 2.5% FOM per year
+    marginal_cost: 0.0 # €/MWh
+    max_potential_mw: 800.0 # land constraint potential
+    co2_emissions_factor: 0.0 # tCO2/MWh
+
+  battery:
+    overnight_capex_power: 160000.0 # €/MW inverter & balance of plant
+    overnight_capex_energy: 180000.0 # €/MWh storage cell capacity
+    max_hours: 4.0 # 4h duration battery
+    round_trip_efficiency: 0.88 # 88% round-trip efficiency
+    lifetime: 15 # years
+    fom_percent: 0.015 # 1.5% FOM per year
+    marginal_cost: 1.0 # €/MWh degradation / cycling cost
+    max_potential_mw: 1000.0
+
+  gas:
+    overnight_capex: 800000.0 # €/MW
+    lifetime: 30 # years
+    fom_percent: 0.025
+    fuel_cost: 36.0 # €/MWh_thermal
+    efficiency: 0.52 # electrical efficiency
+    existing_capacity_mw: 400.0 # existing dispatchable backup
+    max_capacity_mw: 800.0
+    co2_emissions_factor: 0.38 # tCO2/MWh_el
+
+  import:
+    default_price: 100.0 # €/MWh
+    max_import_capacity_mw: 1400.0 # Cross-border interconnector capacity
+    co2_emissions_factor: 0.20 # tCO2/MWh (average regional grid intensity)

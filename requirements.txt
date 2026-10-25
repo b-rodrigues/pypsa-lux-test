@@ -1,0 +1,11 @@
+# Dependencies for Luxembourg Energy Transition Simulator
+# Environment is reproducible via Nix flake: `nix develop`
+shiny>=1.5.0
+pypsa>=1.4.0
+linopy>=0.10.0
+polars>=1.0.0
+highspy>=1.14.0
+plotly>=6.0.0
+matplotlib>=3.10.0
+pyyaml>=6.0.0
+pytest>=9.0.0
