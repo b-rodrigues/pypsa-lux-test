@@ -12,10 +12,27 @@
       nixpkgs,
       flake-utils,
     }:
-    flake-utils.lib.eachDefaultSystem (
+    let
+      plotlyOverlay = final: prev: {
+        pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+          (python-final: python-prev: {
+            plotly = python-prev.plotly.overridePythonAttrs (old: {
+              doCheck = false;
+            });
+          })
+        ];
+      };
+    in
+    {
+      overlays.default = plotlyOverlay;
+    }
+    // flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [ plotlyOverlay ];
+        };
         pythonPackages = pkgs.python3Packages;
 
         linopy = pythonPackages.buildPythonPackage rec {
