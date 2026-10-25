@@ -817,7 +817,7 @@ def server(input, output, session):
         )
         return ui.HTML(fig.to_html(include_plotlyjs=False, full_html=False))
 
-    # --- Data Tables (Polars to dicts/list format for Shiny render.table) ---
+    # --- Data Tables (Returning Polars DataFrames directly for narwhals / Shiny render.table) ---
     @render.table
     def table_capacities():
         res = current_results()
@@ -828,7 +828,7 @@ def server(input, output, session):
             pl.col("capacity").round(1).alias("Installed Capacity"),
             pl.col("unit").alias("Unit"),
         )
-        return formatted.to_dicts()
+        return formatted
 
     @render.table
     def table_generation_mix():
@@ -839,7 +839,7 @@ def server(input, output, session):
             pl.col("annual_generation_gwh").round(1).alias("Annual Generation (GWh)"),
             pl.col("share_of_supply_pct").round(1).alias("Share of Total Supply (%)"),
         )
-        return formatted.to_dicts()
+        return formatted
 
     @render.table
     def table_costs():
@@ -851,7 +851,7 @@ def server(input, output, session):
             (pl.col("opex_eur_per_year") / 1e6).round(2).alias("OPEX (€M/year)"),
             (pl.col("total_eur_per_year") / 1e6).round(2).alias("Total (€M/year)"),
         )
-        return formatted.to_dicts()
+        return formatted
 
 
 app = App(app_ui, server)
