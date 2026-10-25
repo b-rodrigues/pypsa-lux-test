@@ -56,7 +56,7 @@ Built as an interactive proof of concept for **STATEC** and energy decision-make
 
 ## Quickstart
 
-### 1. Enter the Nix Development Shell
+### Option A: With Nix (Recommended)
 
 Ensure Nix with Flakes is available, then enter the shell:
 
@@ -66,7 +66,17 @@ nix develop
 
 This immediately loads Python, Shiny, Polars, PyPSA, Linopy, and the HiGHS solver.
 
-### 2. Launch the Shiny Dashboard
+### Option B: Without Nix (Standard Python Virtualenv)
+
+For non-Nix users on Linux, macOS, or Windows:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### Launch the Shiny Dashboard
 
 ```bash
 shiny run app.py --reload
@@ -74,7 +84,7 @@ shiny run app.py --reload
 
 Open your browser at `http://127.0.0.1:8000`.
 
-### 3. Run the Automated Test Suite
+### Run the Automated Test Suite
 
 ```bash
 pytest
