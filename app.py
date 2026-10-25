@@ -30,6 +30,156 @@ CARRIER_COLORS = {
     "battery": "#8e44ad",  # Purple
 }
 
+
+def build_help_content():
+    """Build rich interactive help and explanation view."""
+    return ui.div(
+        ui.div(
+            {"class": "alert alert-primary d-flex align-items-center mb-4", "role": "alert"},
+            ui.div(
+                ui.h5("💡 What is this Simulator?", class_="alert-heading fw-bold mb-1"),
+                ui.p(
+                    "This tool is an interactive decision-support simulator for Luxembourg's electricity system. "
+                    "When you change assumptions in the sidebar and click ",
+                    ui.strong("⚡ Run Scenario"),
+                    ", an open-source mathematical optimisation engine (PyPSA) solves a linear programming problem in real-time. "
+                    "It calculates the ",
+                    ui.strong("least-cost combination"),
+                    " of domestic solar, onshore wind, battery storage, backup gas, and foreign electricity imports "
+                    "needed to supply Luxembourg's demand for every hour of the year without blackouts.",
+                    class_="mb-0 small",
+                ),
+            ),
+        ),
+        ui.div(
+            {"class": "row g-3 mb-4"},
+            ui.div(
+                {"class": "col-12 col-md-6"},
+                ui.div(
+                    {"class": "help-card h-100"},
+                    ui.h6("📊 1. The 4 Key Performance Indicators (KPIs)", class_="fw-bold text-primary mb-3"),
+                    ui.tags.ul(
+                        {"class": "list-unstyled small mb-0"},
+                        ui.tags.li(
+                            ui.strong("💶 Total Annual System Cost: "),
+                            "The complete yearly cost (€ millions/year) to meet all Luxembourg demand. It sums annualised capital repayments for new equipment (CAPEX) with fuel, operating, and import costs (OPEX). The badge shows the difference vs. the baseline.",
+                            class_="mb-2",
+                        ),
+                        ui.tags.li(
+                            ui.strong("🏭 Annual CO₂ Emissions: "),
+                            "Estimated thousand tonnes of CO₂/year. Accounts for domestic gas peakers (0.38 tCO₂/MWh) and emissions embedded in imported electricity (regional grid average 0.20 tCO₂/MWh).",
+                            class_="mb-2",
+                        ),
+                        ui.tags.li(
+                            ui.strong("🔌 Import Dependency: "),
+                            "The percentage of total electricity consumed that comes from cross-border interconnectors (Germany, Belgium, France).",
+                            class_="mb-2",
+                        ),
+                        ui.tags.li(
+                            ui.strong("☀️ Domestic Renewable Share: "),
+                            "The percentage of electricity supplied by solar panels and wind turbines located inside Luxembourg.",
+                            class_="mb-0",
+                        ),
+                    ),
+                ),
+            ),
+            ui.div(
+                {"class": "col-12 col-md-6"},
+                ui.div(
+                    {"class": "help-card h-100"},
+                    ui.h6("📈 2. Overview Charts Explained", class_="fw-bold text-primary mb-3"),
+                    ui.tags.ul(
+                        {"class": "list-unstyled small mb-0"},
+                        ui.tags.li(
+                            ui.strong("Generation Mix (GWh/year): "),
+                            "A stacked bar chart comparing the total annual energy delivered. Colors indicate source: ",
+                            ui.span("Amber = Solar", class_="badge text-dark", style="background-color: #f39c12;"),
+                            " ",
+                            ui.span("Blue = Wind", class_="badge text-white", style="background-color: #2980b9;"),
+                            " ",
+                            ui.span("Purple = Battery", class_="badge text-white", style="background-color: #8e44ad;"),
+                            " ",
+                            ui.span("Red = Gas", class_="badge text-white", style="background-color: #e74c3c;"),
+                            " ",
+                            ui.span("Slate = Imports", class_="badge text-white", style="background-color: #34495e;"),
+                            ".",
+                            class_="mb-2",
+                        ),
+                        ui.tags.li(
+                            ui.strong("Optimal Installed Capacities (MW): "),
+                            "The optimal power capacity chosen by the model. If solar or battery costs drop, the solver automatically builds more capacity until reaching economic or technical limits.",
+                            class_="mb-2",
+                        ),
+                        ui.tags.li(
+                            ui.strong("Cost Breakdown (€M/year): "),
+                            "Distinguishes fixed investment costs (annualised CAPEX) from variable operating costs (OPEX & fuel).",
+                            class_="mb-0",
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        ui.div(
+            {"class": "help-card mb-4"},
+            ui.h6("⏱️ 3. How to Read the Hourly Dispatch (168-Hour Tab)", class_="fw-bold text-primary mb-2"),
+            ui.p(
+                "The 'Hourly Dispatch' tab shows a minute-by-minute simulation of one full representative week (Monday to Sunday):",
+                class_="small text-muted mb-2",
+            ),
+            ui.tags.ul(
+                {"class": "small mb-0"},
+                ui.tags.li(
+                    ui.strong("Solid Black Curve: "),
+                    "Luxembourg's electricity demand (MW), showing high demand on weekdays and lower demand at night and on weekends.",
+                ),
+                ui.tags.li(
+                    ui.strong("Stacked Colored Areas (above 0): "),
+                    "Which power sources generate electricity in that hour to meet demand.",
+                ),
+                ui.tags.li(
+                    ui.strong("Purple Area Below Zero (< 0): "),
+                    "Battery charging. The battery absorbs excess solar power or cheap power during sunny hours.",
+                ),
+                ui.tags.li(
+                    ui.strong("Purple Area Above Zero (> 0): "),
+                    "Battery discharging. Stored clean energy is dispatched back into the grid to meet evening demand spikes.",
+                ),
+                ui.tags.li(
+                    ui.strong("Battery State of Charge Chart: "),
+                    "Shows the energy level (MWh) inside the batteries across time. The cyclic constraint ensures the week starts and ends with the same energy level (no free energy).",
+                ),
+            ),
+        ),
+        ui.div(
+            {"class": "help-card mb-2"},
+            ui.h6("🎛️ 4. How to Use the Scenario Controls", class_="fw-bold text-primary mb-2"),
+            ui.tags.ol(
+                {"class": "small mb-0"},
+                ui.tags.li(
+                    ui.strong("Move the sliders: "),
+                    "Adjust electricity demand growth (-10% to +40%), renewable cost multipliers (20% to 150%), battery costs, import prices, or carbon prices (€/tCO₂).",
+                    class_="mb-1",
+                ),
+                ui.tags.li(
+                    ui.strong("Click '⚡ Run Scenario': "),
+                    "Triggers the PyPSA optimisation engine. All charts, KPIs, and tables update in <0.05 seconds.",
+                    class_="mb-1",
+                ),
+                ui.tags.li(
+                    ui.strong("Or try Quick Presets: "),
+                    "Click presets like 'Deep Decarbonisation', 'High Electrification', or 'Import Crisis' to immediately load illustrative scenarios.",
+                    class_="mb-1",
+                ),
+                ui.tags.li(
+                    ui.strong("Reset anytime: "),
+                    "Click '↺ Reset to Baseline' to return to default assumptions.",
+                    class_="mb-0",
+                ),
+            ),
+        ),
+    )
+
+
 # --- Shiny UI Definition ---
 app_ui = ui.page_fluid(
     ui.tags.head(
@@ -51,6 +201,8 @@ app_ui = ui.page_fluid(
             .nav-tabs .nav-link { font-weight: 600; color: #475569; }
             .nav-tabs .nav-link.active { color: #0284c7; border-bottom: 2px solid #0284c7; }
             .alert-disclaimer { background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px 16px; margin-bottom: 16px; border-radius: 4px; font-size: 0.85rem; color: #1e3a8a; }
+            .help-card { background: white; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0; margin-bottom: 16px; }
+            .help-icon { font-size: 1.25rem; margin-right: 8px; }
             """
         ),
     ),
@@ -67,10 +219,16 @@ app_ui = ui.page_fluid(
                 ),
             ),
             ui.div(
+                {"class": "d-flex align-items-center gap-2"},
+                ui.input_action_button(
+                    "help_btn",
+                    "❓ Help: What am I looking at?",
+                    class_="btn btn-info text-white btn-sm shadow-sm",
+                ),
                 ui.span(
                     "Proof of Concept • HiGHS Solver",
                     class_="badge bg-light text-secondary border px-3 py-2 fs-6",
-                )
+                ),
             ),
         ),
         ui.layout_sidebar(
@@ -79,6 +237,11 @@ app_ui = ui.page_fluid(
                 ui.div(
                     ui.div("Scenario Assumptions", class_="sidebar-title"),
                     ui.div("Adjust parameters & re-optimise", class_="sidebar-subtitle"),
+                    ui.input_action_button(
+                        "help_sidebar_btn",
+                        "❓ Click for Help & Guide",
+                        class_="btn btn-outline-info w-100 btn-sm mb-3",
+                    ),
                 ),
                 ui.input_slider(
                     "demand_growth_pct",
@@ -212,6 +375,13 @@ app_ui = ui.page_fluid(
                                 ui.output_ui("plot_cost_breakdown"),
                             ),
                         ),
+                    ),
+                ),
+                ui.nav_panel(
+                    "Help & Explanations",
+                    ui.div(
+                        {"class": "mt-3"},
+                        build_help_content(),
                     ),
                 ),
                 ui.nav_panel(
@@ -372,6 +542,28 @@ def server(input, output, session):
         ui.update_slider("carbon_price", value=80.0)
         current_results.set(BASELINE_RESULTS)
         last_error.set(None)
+
+    # Show interactive Help Modal
+    def _show_help():
+        ui.modal_show(
+            ui.modal(
+                build_help_content(),
+                title="📖 Luxembourg Energy Transition Simulator — User Guide & Explanations",
+                size="xl",
+                easy_close=True,
+                footer=ui.modal_button("Close Guide"),
+            )
+        )
+
+    @reactive.Effect
+    @reactive.event(input.help_btn)
+    def _on_help_click():
+        _show_help()
+
+    @reactive.Effect
+    @reactive.event(input.help_sidebar_btn)
+    def _on_help_sidebar_click():
+        _show_help()
 
     # Optimization trigger
     @reactive.Effect
